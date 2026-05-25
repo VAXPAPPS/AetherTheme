@@ -59,6 +59,12 @@ static void on_btn_apply_clicked(GtkButton *button, gpointer data) {
     save_preferences();
 }
 
+static gboolean on_nav_item_clicked(GtkWidget *widget, GdkEventButton *event, gpointer data) {
+    void (*func)(void) = (void (*)(void))data;
+    if (func) func();
+    return TRUE;
+}
+
 int main(int argc, char *argv[]) {
     gtk_init(&argc, &argv);
 
@@ -71,6 +77,12 @@ int main(int argc, char *argv[]) {
     }
 
     GtkWidget *win = GTK_WIDGET(gtk_builder_get_object(builder, "window"));
+    
+    GtkWidget *header = gtk_header_bar_new();
+    gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(header), TRUE);
+    gtk_header_bar_set_title(GTK_HEADER_BAR(header), "AetherTheme");
+    gtk_window_set_titlebar(GTK_WINDOW(win), header);
+
     g_signal_connect(win, "destroy", G_CALLBACK(on_window_destroy), NULL);
     g_signal_connect(win, "key-release-event", G_CALLBACK(on_key_release_event), NULL);
 
@@ -80,22 +92,22 @@ int main(int argc, char *argv[]) {
     menubar = GTK_MENU_BAR(gtk_builder_get_object(builder, "menubar"));
 
     GtkWidget *item_widgets = GTK_WIDGET(gtk_builder_get_object(builder, "item-widgets"));
-    g_signal_connect(item_widgets, "activate", G_CALLBACK(display_themes), NULL);
+    g_signal_connect(item_widgets, "button-press-event", G_CALLBACK(on_nav_item_clicked), display_themes);
 
     GtkWidget *item_icons = GTK_WIDGET(gtk_builder_get_object(builder, "item-icons"));
-    g_signal_connect(item_icons, "activate", G_CALLBACK(display_icon_themes), NULL);
+    g_signal_connect(item_icons, "button-press-event", G_CALLBACK(on_nav_item_clicked), display_icon_themes);
 
     GtkWidget *item_cursors = GTK_WIDGET(gtk_builder_get_object(builder, "item-cursors"));
-    g_signal_connect(item_cursors, "activate", G_CALLBACK(display_cursor_themes), NULL);
+    g_signal_connect(item_cursors, "button-press-event", G_CALLBACK(on_nav_item_clicked), display_cursor_themes);
 
     GtkWidget *item_font = GTK_WIDGET(gtk_builder_get_object(builder, "item-font"));
-    g_signal_connect(item_font, "activate", G_CALLBACK(display_font_settings_form), NULL);
+    g_signal_connect(item_font, "button-press-event", G_CALLBACK(on_nav_item_clicked), display_font_settings_form);
 
     GtkWidget *item_other = GTK_WIDGET(gtk_builder_get_object(builder, "item-other"));
-    g_signal_connect(item_other, "activate", G_CALLBACK(display_other_settings_form), NULL);
+    g_signal_connect(item_other, "button-press-event", G_CALLBACK(on_nav_item_clicked), display_other_settings_form);
 
     GtkWidget *item_preferences = GTK_WIDGET(gtk_builder_get_object(builder, "item-preferences"));
-    g_signal_connect(item_preferences, "activate", G_CALLBACK(display_program_settings_form), NULL);
+    g_signal_connect(item_preferences, "button-press-event", G_CALLBACK(on_nav_item_clicked), display_program_settings_form);
 
     GtkWidget *btn_close = GTK_WIDGET(gtk_builder_get_object(builder, "btn-close"));
     g_signal_connect(btn_close, "clicked", G_CALLBACK(on_btn_close_clicked), NULL);
