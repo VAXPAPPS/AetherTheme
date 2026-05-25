@@ -399,6 +399,19 @@ void display_icon_themes(void) {
     gtk_widget_show(GTK_WIDGET(scrolled_window));
 }
 
+static void update_cursor_preview(void) {
+    if (preview) {
+        GList *children = gtk_container_get_children(GTK_CONTAINER(preview));
+        for (GList *iter = children; iter != NULL; iter = g_list_next(iter)) {
+            gtk_widget_destroy(GTK_WIDGET(iter->data));
+        }
+        g_list_free(children);
+
+        gtk_box_pack_start(GTK_BOX(preview), setup_cursors_preview(), FALSE, FALSE, 0);
+        gtk_widget_show_all(preview);
+    }
+}
+
 static gboolean on_cursor_theme_clicked(GtkWidget *widget, GdkEventButton *event, gpointer data) {
     const gchar *theme_name = (const gchar *)data;
     gchar *folder_name = g_hash_table_lookup(cursor_theme_names_map, theme_name);
@@ -406,6 +419,7 @@ static gboolean on_cursor_theme_clicked(GtkWidget *widget, GdkEventButton *event
     g_free(gsettings.cursor_theme);
     gsettings.cursor_theme = g_strdup(theme_val);
     g_object_set(gtk_settings_get_default(), "gtk-cursor-theme-name", theme_val, NULL);
+    update_cursor_preview();
     return FALSE;
 }
 
@@ -416,6 +430,7 @@ static gboolean on_cursor_theme_focus(GtkWidget *widget, GdkEventFocus *event, g
     g_free(gsettings.cursor_theme);
     gsettings.cursor_theme = g_strdup(theme_val);
     g_object_set(gtk_settings_get_default(), "gtk-cursor-theme-name", theme_val, NULL);
+    update_cursor_preview();
     return FALSE;
 }
 
