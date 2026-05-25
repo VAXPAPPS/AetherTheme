@@ -18,14 +18,14 @@ add_project_arguments('-DVERSION="@0@"'.format(meson.project_version()), languag
 datadir = get_option('datadir')
 bindir = get_option('bindir')
 
-nwg_look_sources = [
+aethertheme_sources = [
   'src/main.c',
   'src/tools.c',
   'src/uicomponents.c',
   'src/stylepak.c'
 ]
 
-executable('AetherTheme', nwg_look_sources,
+executable('aethertheme', aethertheme_sources,
   dependencies: [gtk_dep, glib_dep, gio_dep, gio_unix_dep, json_glib_dep],
   install: true
 )

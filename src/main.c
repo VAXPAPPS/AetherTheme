@@ -72,8 +72,11 @@ int main(int argc, char *argv[]) {
 
     GtkBuilder *builder = gtk_builder_new_from_file("stuff/main.glade");
     if (!builder) {
-        g_printerr("Failed to load glade file\n");
-        return 1;
+        builder = gtk_builder_new_from_file("/usr/share/AetherTheme/main.glade");
+        if (!builder) {
+            g_printerr("Failed to load glade file\n");
+            return 1;
+        }
     }
 
     GtkWidget *win = GTK_WIDGET(gtk_builder_get_object(builder, "window"));

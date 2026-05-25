@@ -1,0 +1,8 @@
+Package: aethertheme
+Version: 0.1.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Maintainer: Aether <aether@example.com>
+Description: AetherTheme Manager
+ A custom GTK3 theme manager for Aether Desktop.
