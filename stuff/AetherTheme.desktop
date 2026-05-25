@@ -1,11 +1,11 @@
 [Desktop Entry]
 Type=Application
-Name=GTK Settings
-Name[pl]=Ustawienia GTK
-Name[es]=Ajustes de GTK
-GenericName=Adjust Look and Feel
-GenericName[pl]=Dopasuj ustawienia wyglądu
-GenericName[es]=Personalizar apariencia
+Name=AetherTheme
+Name[pl]=AetherTheme
+Name[es]=AetherTheme
+GenericName=AetherTheme
+GenericName[pl]=AetherTheme
+GenericName[es]=AetherTheme
 Comment=Customizes GTK3 look and feel settings
 Comment[pl]=Dostosowuje ustawienia środowiska graficznego GTK3
 Comment[es]=Personaliza la apariencia y el comportamiento de GTK3
