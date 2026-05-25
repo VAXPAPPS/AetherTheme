@@ -93,7 +93,10 @@ void load_preferences(void) {
 
 void save_preferences(void) {
     gchar *c_home = config_home();
-    gchar *preferences_file = g_build_filename(c_home, "AetherTheme", "config", NULL);
+    gchar *preferences_dir = g_build_filename(c_home, "AetherTheme", NULL);
+    gchar *preferences_file = g_build_filename(preferences_dir, "config", NULL);
+
+    make_dir(preferences_dir);
 
     JsonBuilder *builder = json_builder_new();
     json_builder_begin_object(builder);
@@ -141,6 +144,7 @@ void save_preferences(void) {
     g_object_unref(builder);
 
     g_free(preferences_file);
+    g_free(preferences_dir);
     g_free(c_home);
 }
 
@@ -302,20 +306,28 @@ void save_gtk_rc_20(void) {
 }
 
 void save_index_theme(void) {
-    gchar *icons_dir = g_build_filename(g_get_home_dir(), ".icons", "default", NULL);
-    make_dir(icons_dir);
-    gchar *config_file = g_build_filename(icons_dir, "index.theme", NULL);
+    gchar *icons_dir_1 = g_build_filename(g_get_home_dir(), ".icons", "default", NULL);
+    make_dir(icons_dir_1);
+    gchar *config_file_1 = g_build_filename(icons_dir_1, "index.theme", NULL);
     
+    gchar *icons_dir_2 = g_build_filename(data_home(), "icons", "default", NULL);
+    make_dir(icons_dir_2);
+    gchar *config_file_2 = g_build_filename(icons_dir_2, "index.theme", NULL);
+
     GString *content = g_string_new("# This file is written by AetherTheme. Do not edit.\n");
     g_string_append(content, "[Icon Theme]\n");
     g_string_append_printf(content, "Name=Default\n");
     g_string_append_printf(content, "Comment=Default Cursor Theme\n");
     g_string_append_printf(content, "Inherits=%s\n", gsettings.cursor_theme);
 
-    g_file_set_contents(config_file, content->str, -1, NULL);
+    g_file_set_contents(config_file_1, content->str, -1, NULL);
+    g_file_set_contents(config_file_2, content->str, -1, NULL);
+
     g_string_free(content, TRUE);
-    g_free(config_file);
-    g_free(icons_dir);
+    g_free(config_file_1);
+    g_free(icons_dir_1);
+    g_free(config_file_2);
+    g_free(icons_dir_2);
 }
 
 void save_xsettingsd(void) {
