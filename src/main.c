@@ -78,6 +78,22 @@ int main(int argc, char *argv[]) {
 
     GtkWidget *win = GTK_WIDGET(gtk_builder_get_object(builder, "window"));
     
+    // Enable transparency
+    GdkScreen *screen = gtk_widget_get_screen(win);
+    GdkVisual *visual = gdk_screen_get_rgba_visual(screen);
+    if (visual != NULL && gdk_screen_is_composited(screen)) {
+        gtk_widget_set_visual(win, visual);
+    }
+
+    // Apply transparent black background
+    GtkCssProvider *provider = gtk_css_provider_new();
+    gtk_css_provider_load_from_data(provider,
+        "window, window.background, window.csd, headerbar, .titlebar { background-color: rgba(0, 0, 0, 0.3); background-image: none; box-shadow: none; border: none; }",
+        -1, NULL);
+    gtk_style_context_add_provider_for_screen(screen,
+        GTK_STYLE_PROVIDER(provider),
+        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
     GtkWidget *header = gtk_header_bar_new();
     gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(header), TRUE);
     gtk_header_bar_set_title(GTK_HEADER_BAR(header), "AetherTheme");
@@ -90,6 +106,11 @@ int main(int argc, char *argv[]) {
     scrolled_window = GTK_SCROLLED_WINDOW(gtk_builder_get_object(builder, "scrolled-window"));
     grid = GTK_GRID(gtk_builder_get_object(builder, "grid"));
     menubar = GTK_MENU_BAR(gtk_builder_get_object(builder, "menubar"));
+
+    g_object_ref(menubar);
+    gtk_container_remove(GTK_CONTAINER(grid), GTK_WIDGET(menubar));
+    gtk_header_bar_pack_start(GTK_HEADER_BAR(header), GTK_WIDGET(menubar));
+    g_object_unref(menubar);
 
     GtkWidget *item_widgets = GTK_WIDGET(gtk_builder_get_object(builder, "item-widgets"));
     g_signal_connect(item_widgets, "button-press-event", G_CALLBACK(on_nav_item_clicked), display_themes);
