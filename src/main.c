@@ -34,7 +34,11 @@ static void on_btn_apply_clicked(GtkButton *button, gpointer data) {
     if (preferences.export_settings_ini) save_gtk_ini_3();
     if (preferences.export_gtkrc_20) save_gtk_rc_20();
     if (preferences.export_index_theme) save_index_theme();
-    if (preferences.export_xsettingsd) save_xsettingsd();
+    save_xresources();
+    if (preferences.export_xsettingsd) {
+        save_xsettingsd();
+        system("killall -HUP xsettingsd 2>/dev/null");
+    }
     if (preferences.export_gtk4_symlinks) {
         link_gtk4_stuff();
         save_gtk_ini_4();
@@ -57,6 +61,9 @@ static void on_btn_apply_clicked(GtkButton *button, gpointer data) {
     }
     
     save_preferences();
+    
+    // Signal X11 / Xwayland root window
+    system("xsetroot -cursor_name left_ptr 2>/dev/null");
 }
 
 static gboolean on_nav_item_clicked(GtkWidget *widget, GdkEventButton *event, gpointer data) {

@@ -357,6 +357,38 @@ void save_xsettingsd(void) {
     g_free(config_dir);
 }
 
+void save_xresources(void) {
+    gchar *config_file = g_build_filename(g_get_home_dir(), ".Xresources", NULL);
+    gchar *contents = NULL;
+    gsize length = 0;
+    
+    GString *new_content = g_string_new("");
+    
+    if (g_file_get_contents(config_file, &contents, &length, NULL)) {
+        gchar **lines = g_strsplit(contents, "\n", -1);
+        for (int i = 0; lines[i]; i++) {
+            gchar *line = g_strstrip(lines[i]);
+            if (line[0] == '\0') continue;
+            
+            if (!g_str_has_prefix(line, "Xcursor.theme") && 
+                !g_str_has_prefix(line, "Xcursor.size")) {
+                g_string_append_printf(new_content, "%s\n", line);
+            }
+        }
+        g_strfreev(lines);
+        g_free(contents);
+    }
+    
+    g_string_append_printf(new_content, "Xcursor.theme: %s\n", gsettings.cursor_theme);
+    g_string_append_printf(new_content, "Xcursor.size: %d\n", gsettings.cursor_size);
+    
+    g_file_set_contents(config_file, new_content->str, -1, NULL);
+    g_string_free(new_content, TRUE);
+    g_free(config_file);
+    
+    system("xrdb -merge ~/.Xresources 2>/dev/null");
+}
+
 void clear_gtk4_symlinks(void) {
     gchar *config_dir = g_build_filename(config_home(), "gtk-4.0", NULL);
     const gchar *files[] = {"gtk.css", "gtk-dark.css", "assets"};

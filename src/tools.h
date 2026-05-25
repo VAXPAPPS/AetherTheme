@@ -74,6 +74,7 @@ void save_gtk_ini_3(void);
 void save_gtk_rc_20(void);
 void save_index_theme(void);
 void save_xsettingsd(void);
+void save_xresources(void);
 void link_gtk4_stuff(void);
 void clear_gtk4_symlinks(void);
 void save_gtk_ini_4(void);
