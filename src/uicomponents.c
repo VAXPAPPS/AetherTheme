@@ -1,6 +1,7 @@
 #include "uicomponents.h"
 #include "tools.h"
 #include <stdio.h>
+#include <X11/Xcursor/Xcursor.h>
 
 extern GtkViewport *viewport_list;
 extern GtkScrolledWindow *scrolled_window;
@@ -128,14 +129,94 @@ static GtkWidget* setup_icons_preview(void) {
     return frame;
 }
 
+static GdkPixbuf* load_xcursor_as_pixbuf(const char *filename, int size) {
+    XcursorImage *img = XcursorFilenameLoadImage(filename, size);
+    if (!img) return NULL;
+    
+    GdkPixbuf *pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, img->width, img->height);
+    if (!pixbuf) {
+        XcursorImageDestroy(img);
+        return NULL;
+    }
+    
+    guchar *pixels = gdk_pixbuf_get_pixels(pixbuf);
+    int rowstride = gdk_pixbuf_get_rowstride(pixbuf);
+    
+    for (int y = 0; y < img->height; y++) {
+        guchar *row = pixels + y * rowstride;
+        for (int x = 0; x < img->width; x++) {
+            XcursorPixel p = img->pixels[y * img->width + x];
+            guchar a = (p >> 24) & 0xff;
+            guchar r = (p >> 16) & 0xff;
+            guchar g = (p >> 8) & 0xff;
+            guchar b = p & 0xff;
+            
+            row[x * 4 + 0] = r;
+            row[x * 4 + 1] = g;
+            row[x * 4 + 2] = b;
+            row[x * 4 + 3] = a;
+        }
+    }
+    
+    XcursorImageDestroy(img);
+    return pixbuf;
+}
+
 static GtkWidget* setup_cursors_preview(void) {
     GtkWidget *frame = gtk_frame_new("  Cursor Theme Preview  ");
     gtk_frame_set_label_align(GTK_FRAME(frame), 0.5, 0.5);
     g_object_set(frame, "margin", 6, "valign", GTK_ALIGN_START, NULL);
 
-    GtkWidget *lbl = gtk_label_new("Cursors cannot be reliably previewed without xcur2png.");
-    g_object_set(lbl, "margin", 12, NULL);
-    gtk_container_add(GTK_CONTAINER(frame), lbl);
+    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
+    g_object_set(box, "hexpand", TRUE, "margin", 12, NULL);
+    gtk_container_add(GTK_CONTAINER(frame), box);
+
+    GtkWidget *flowbox = gtk_flow_box_new();
+    gtk_flow_box_set_max_children_per_line(GTK_FLOW_BOX(flowbox), 6);
+    gtk_box_pack_start(GTK_BOX(box), flowbox, FALSE, FALSE, 0);
+
+    const gchar *cursor_names[] = {
+        "left_ptr", "right_ptr", "pointer", "crosshair", "wait", "text", "vertical-text", "zoom-in", NULL
+    };
+
+    gchar *theme_dir = gsettings.cursor_theme ? g_hash_table_lookup(cursor_theme_paths, gsettings.cursor_theme) : NULL;
+
+    gboolean any_loaded = FALSE;
+    for (int i = 0; cursor_names[i]; i++) {
+        gchar *cursor_path = NULL;
+        if (theme_dir) {
+            cursor_path = g_build_filename(theme_dir, cursor_names[i], NULL);
+        } else {
+            cursor_path = g_build_filename(".", cursor_names[i], NULL);
+        }
+        
+        GdkPixbuf *pixbuf = load_xcursor_as_pixbuf(cursor_path, 32);
+        
+        // Try fallback to local dir just in case for testing
+        if (!pixbuf && theme_dir) {
+            gchar *local_path = g_build_filename(".", cursor_names[i], NULL);
+            pixbuf = load_xcursor_as_pixbuf(local_path, 32);
+            g_free(local_path);
+        }
+
+        g_free(cursor_path);
+
+        if (pixbuf) {
+            GtkWidget *img = gtk_image_new_from_pixbuf(pixbuf);
+            g_object_unref(pixbuf);
+            
+            GtkWidget *fb_child = gtk_flow_box_child_new();
+            gtk_widget_set_can_focus(fb_child, FALSE);
+            gtk_container_add(GTK_CONTAINER(fb_child), img);
+            gtk_container_add(GTK_CONTAINER(flowbox), fb_child);
+            any_loaded = TRUE;
+        }
+    }
+
+    if (!any_loaded) {
+        GtkWidget *lbl = gtk_label_new("No standard cursors found for this theme.");
+        gtk_container_add(GTK_CONTAINER(flowbox), lbl);
+    }
     
     return frame;
 }

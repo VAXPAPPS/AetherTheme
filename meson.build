@@ -11,6 +11,7 @@ glib_dep = dependency('glib-2.0', version: '>= 2.50.0')
 gio_dep = dependency('gio-2.0')
 gio_unix_dep = dependency('gio-unix-2.0')
 json_glib_dep = dependency('json-glib-1.0')
+xcursor_dep = dependency('xcursor')
 
 add_project_arguments('-DVERSION="@0@"'.format(meson.project_version()), language: 'c')
 
@@ -26,7 +27,7 @@ aethertheme_sources = [
 ]
 
 executable('aethertheme', aethertheme_sources,
-  dependencies: [gtk_dep, glib_dep, gio_dep, gio_unix_dep, json_glib_dep],
+  dependencies: [gtk_dep, glib_dep, gio_dep, gio_unix_dep, json_glib_dep, xcursor_dep],
   install: true
 )
 
