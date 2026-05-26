@@ -4,6 +4,7 @@
 #include "tools.h"
 #include "uicomponents.h"
 #include "stylepak.h"
+#include "../theme_manager.h"
 
 // Global pointers to widgets
 GtkViewport *viewport_list = NULL;
@@ -74,6 +75,8 @@ static gboolean on_nav_item_clicked(GtkWidget *widget, GdkEventButton *event, gp
 
 int main(int argc, char *argv[]) {
     gtk_init(&argc, &argv);
+
+    theme_manager_init();
 
     // TODO: implement CLI flags, setup defaults, load preferences
 

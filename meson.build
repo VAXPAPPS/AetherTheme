@@ -23,7 +23,8 @@ aethertheme_sources = [
   'src/main.c',
   'src/tools.c',
   'src/uicomponents.c',
-  'src/stylepak.c'
+  'src/stylepak.c',
+  'theme_manager.c'
 ]
 
 executable('aethertheme', aethertheme_sources,
