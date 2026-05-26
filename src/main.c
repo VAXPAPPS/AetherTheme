@@ -4,7 +4,7 @@
 #include "tools.h"
 #include "uicomponents.h"
 #include "stylepak.h"
-#include "../theme_manager.h"
+#include "theme_manager.h"
 
 // Global pointers to widgets
 GtkViewport *viewport_list = NULL;

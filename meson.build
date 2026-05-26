@@ -24,10 +24,10 @@ aethertheme_sources = [
   'src/tools.c',
   'src/uicomponents.c',
   'src/stylepak.c',
-  'theme_manager.c'
+  'src/theme_manager.c'
 ]
 
-executable('aethertheme', aethertheme_sources,
+executable('AetherTheme', aethertheme_sources,
   dependencies: [gtk_dep, glib_dep, gio_dep, gio_unix_dep, json_glib_dep, xcursor_dep],
   install: true
 )
