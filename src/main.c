@@ -80,11 +80,15 @@ int main(int argc, char *argv[]) {
 
     // TODO: implement CLI flags, setup defaults, load preferences
 
-    GtkBuilder *builder = gtk_builder_new_from_file("stuff/main.glade");
-    if (!builder) {
-        builder = gtk_builder_new_from_file("/usr/share/AetherTheme/main.glade");
-        if (!builder) {
-            g_printerr("Failed to load glade file\n");
+    GtkBuilder *builder = gtk_builder_new();
+    GError *err = NULL;
+
+    if (!gtk_builder_add_from_file(builder, "stuff/main.glade", &err)) {
+        g_clear_error(&err);
+        if (!gtk_builder_add_from_file(builder, "/usr/share/AetherTheme/main.glade", &err)) {
+            g_printerr("Failed to load glade file: %s\n", err ? err->message : "unknown error");
+            g_clear_error(&err);
+            g_object_unref(builder);
             return 1;
         }
     }

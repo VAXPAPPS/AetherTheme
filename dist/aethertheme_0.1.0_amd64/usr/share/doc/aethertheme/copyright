@@ -1,0 +1,16 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: AetherTheme
+Upstream-Contact: Venom Project <venom@example.com>
+Source: https://github.com/VAXPAPPS/AetherTheme
+
+Files: *
+Copyright: 2026 Venom Project
+License: GPL-3.0+
+
+License: GPL-3.0+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ .
+ The full text is available at /usr/share/common-licenses/GPL-3.

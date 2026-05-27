@@ -1,0 +1,11 @@
+Package: aethertheme
+Version: 0.1.0
+Architecture: amd64
+Maintainer: Venom Project <venom@example.com>
+Installed-Size: 320
+Depends: libgtk-3-0 (>= 3.22.0), libglib2.0-0 (>= 2.50.0), libjson-glib-1.0-0, libxcursor1
+Section: gnome
+Priority: optional
+Homepage: https://github.com/VAXPAPPS/AetherTheme
+Description: GTK3 Theme Manager — Customizes GTK3 look and feel settings
+ AetherTheme is a GTK3 theme manager that integrates with the\n Venom desktop environment. It reads color settings from\n ~/.config/venom/settings.vaxp and applies them in real-time\n without requiring an application restart.
