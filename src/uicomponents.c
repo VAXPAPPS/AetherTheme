@@ -657,6 +657,37 @@ void display_other_settings_form(void) {
 }
 
 
+static void on_export_settings_ini_toggled(GtkToggleButton *btn, gpointer data) {
+    (void)data;
+    preferences.export_settings_ini = gtk_toggle_button_get_active(btn);
+}
+
+static void on_export_gtkrc_20_toggled(GtkToggleButton *btn, gpointer data) {
+    (void)data;
+    preferences.export_gtkrc_20 = gtk_toggle_button_get_active(btn);
+}
+
+static void on_export_index_theme_toggled(GtkToggleButton *btn, gpointer data) {
+    (void)data;
+    preferences.export_index_theme = gtk_toggle_button_get_active(btn);
+}
+
+static void on_export_xsettingsd_toggled(GtkToggleButton *btn, gpointer data) {
+    (void)data;
+    preferences.export_xsettingsd = gtk_toggle_button_get_active(btn);
+}
+
+static void on_export_gtk4_symlinks_toggled(GtkToggleButton *btn, gpointer data) {
+    (void)data;
+    preferences.export_gtk4_symlinks = gtk_toggle_button_get_active(btn);
+}
+
+static void on_btn_clear_gtk4_clicked(GtkButton *button, gpointer data) {
+    (void)button;
+    (void)data;
+    clear_gtk4_symlinks();
+}
+
 void display_program_settings_form(void) {
     destroy_content();
 
@@ -679,31 +710,31 @@ void display_program_settings_form(void) {
 
     GtkWidget *cb1 = gtk_check_button_new_with_label("~/.config/gtk-3.0/settings.ini");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cb1), preferences.export_settings_ini);
-    // TODO: Connect signal
+    g_signal_connect(cb1, "toggled", G_CALLBACK(on_export_settings_ini_toggled), NULL);
     gtk_grid_attach(GTK_GRID(g), cb1, 0, row++, 1, 1);
 
     GtkWidget *cb2 = gtk_check_button_new_with_label("~/.gtkrc-2.0");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cb2), preferences.export_gtkrc_20);
-    // TODO: Connect signal
+    g_signal_connect(cb2, "toggled", G_CALLBACK(on_export_gtkrc_20_toggled), NULL);
     gtk_grid_attach(GTK_GRID(g), cb2, 0, row++, 1, 1);
 
     GtkWidget *cb3 = gtk_check_button_new_with_label("~/.icons/default/index.theme");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cb3), preferences.export_index_theme);
-    // TODO: Connect signal
+    g_signal_connect(cb3, "toggled", G_CALLBACK(on_export_index_theme_toggled), NULL);
     gtk_grid_attach(GTK_GRID(g), cb3, 0, row++, 1, 1);
 
     GtkWidget *cb4 = gtk_check_button_new_with_label("~/.config/xsettingsd/xsettingsd.conf");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cb4), preferences.export_xsettingsd);
-    // TODO: Connect signal
+    g_signal_connect(cb4, "toggled", G_CALLBACK(on_export_xsettingsd_toggled), NULL);
     gtk_grid_attach(GTK_GRID(g), cb4, 0, row++, 1, 1);
 
     GtkWidget *cb5 = gtk_check_button_new_with_label("~/.config/gtk-4.0/*");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cb5), preferences.export_gtk4_symlinks);
-    // TODO: Connect signal
+    g_signal_connect(cb5, "toggled", G_CALLBACK(on_export_gtk4_symlinks_toggled), NULL);
     gtk_grid_attach(GTK_GRID(g), cb5, 0, row, 1, 1);
 
     GtkWidget *btn = gtk_button_new_with_label("Clear");
-    // TODO: Connect clearGtk4Symlinks
+    g_signal_connect(btn, "clicked", G_CALLBACK(on_btn_clear_gtk4_clicked), NULL);
     gtk_grid_attach(GTK_GRID(g), btn, 1, row++, 1, 1);
 
     preview = frame;

@@ -339,6 +339,7 @@ void save_xsettingsd(void) {
     g_string_append_printf(content, "Net/ThemeName \"%s\"\n", gsettings.gtk_theme);
     g_string_append_printf(content, "Net/IconThemeName \"%s\"\n", gsettings.icon_theme);
     g_string_append_printf(content, "Gtk/CursorThemeName \"%s\"\n", gsettings.cursor_theme);
+    g_string_append_printf(content, "Gtk/CursorThemeSize %d\n", gsettings.cursor_size);
     g_string_append_printf(content, "Net/EnableEventSounds %d\n", gsettings.event_sounds ? 1 : 0);
     g_string_append_printf(content, "EnableInputFeedbackSounds %d\n", gsettings.input_feedback_sounds ? 1 : 0);
     g_string_append_printf(content, "Xft/Antialias %d\n", g_strcmp0(gsettings.font_antialiasing, "none") != 0 ? 1 : 0);
@@ -357,8 +358,8 @@ void save_xsettingsd(void) {
     g_free(config_dir);
 }
 
-void save_xresources(void) {
-    gchar *config_file = g_build_filename(g_get_home_dir(), ".Xresources", NULL);
+static void save_xresources_file(const gchar *filename) {
+    gchar *config_file = g_build_filename(g_get_home_dir(), filename, NULL);
     gchar *contents = NULL;
     gsize length = 0;
     
@@ -385,8 +386,13 @@ void save_xresources(void) {
     g_file_set_contents(config_file, new_content->str, -1, NULL);
     g_string_free(new_content, TRUE);
     g_free(config_file);
-    
+}
+
+void save_xresources(void) {
+    save_xresources_file(".Xresources");
+    save_xresources_file(".Xdefaults");
     system("xrdb -merge ~/.Xresources 2>/dev/null");
+    system("xrdb -merge ~/.Xdefaults 2>/dev/null");
 }
 
 void clear_gtk4_symlinks(void) {

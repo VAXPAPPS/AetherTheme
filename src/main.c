@@ -77,8 +77,8 @@ int main(int argc, char *argv[]) {
     gtk_init(&argc, &argv);
 
     theme_manager_init();
-
-    // TODO: implement CLI flags, setup defaults, load preferences
+    load_preferences();
+    read_gsettings();
 
     GtkBuilder *builder = gtk_builder_new();
     GError *err = NULL;
