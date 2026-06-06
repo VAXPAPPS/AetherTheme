@@ -63,6 +63,17 @@ static void on_btn_apply_clicked(GtkButton *button, gpointer data) {
     
     save_preferences();
     
+    // Update DBus and systemd activation environment for future processes
+    if (gsettings.cursor_theme) {
+        gchar *env_cmd = g_strdup_printf(
+            "dbus-update-activation-environment --systemd XCURSOR_THEME=\"%s\" XCURSOR_SIZE=\"%d\" 2>/dev/null; "
+            "systemctl --user import-environment XCURSOR_THEME XCURSOR_SIZE 2>/dev/null",
+            gsettings.cursor_theme, gsettings.cursor_size
+        );
+        system(env_cmd);
+        g_free(env_cmd);
+    }
+    
     // Signal X11 / Xwayland root window
     system("xsetroot -cursor_name left_ptr 2>/dev/null");
 }
